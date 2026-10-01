@@ -1,0 +1,37 @@
+global:
+  environment: dev
+  domain: dev.library.local
+
+namespace:
+  name: library-system-dev
+
+backend:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  autoscaling:
+    enabled: false
+
+frontend:
+  replicaCount: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  autoscaling:
+    enabled: false
+
+ingress:
+  hosts:
+    - host: dev.library.local
+      paths:
+        - path: /
+          pathType: Prefix

@@ -1,0 +1,41 @@
+global:
+  environment: staging
+  domain: staging.library.example.com
+
+namespace:
+  name: library-system-staging
+
+backend:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 4
+
+frontend:
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+ingress:
+  hosts:
+    - host: staging.library.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: library-staging-tls
+      hosts:
+        - staging.library.example.com

@@ -1,0 +1,49 @@
+global:
+  environment: prod
+  domain: library.example.com
+
+namespace:
+  name: library-system-prod
+
+backend:
+  replicaCount: 3
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1024Mi
+    limits:
+      cpu: 2000m
+      memory: 2048Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 75
+  podDisruptionBudget:
+    minAvailable: 2
+
+frontend:
+  replicaCount: 3
+  resources:
+    requests:
+      cpu: 200m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 8
+
+ingress:
+  hosts:
+    - host: library.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: library-prod-tls
+      hosts:
+        - library.example.com

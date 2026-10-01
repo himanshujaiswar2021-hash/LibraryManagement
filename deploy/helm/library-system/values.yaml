@@ -1,0 +1,82 @@
+# Default values for library-system chart.
+
+global:
+  environment: prod
+  domain: library.local
+
+namespace:
+  name: library-system
+
+backend:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/org/library-backend
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilizationPercentage: 75
+    targetMemoryUtilizationPercentage: 80
+  podDisruptionBudget:
+    minAvailable: 1
+  env:
+    springProfilesActive: prod
+    serverPort: 8080
+    hikariMaxPoolSize: 20
+
+frontend:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/org/library-frontend
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 80
+
+database:
+  host: postgres-postgresql.database.svc.cluster.local
+  port: 5432
+  name: librarydb
+  username: library_user
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - host: library.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: library-tls-cert
+      hosts:
+        - library.example.com
