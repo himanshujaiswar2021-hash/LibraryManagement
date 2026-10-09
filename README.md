@@ -68,6 +68,9 @@ npm install
 npm run build
 ```
 
+### Jenkins CI
+The root `Jenkinsfile` builds and tests the backend and all three services with their Maven wrappers, then installs the frontend dependencies with `npm ci` and builds the frontend. Configure the Jenkins agent with Java 21 and Node.js/npm available on `PATH`. The pipeline publishes JUnit test results and archives generated JARs and the frontend build.
+
 ---
 
 ## 🗄️ Database Migrations (Flyway)
