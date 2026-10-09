@@ -10,3 +10,28 @@ scrape_configs:
         labels:
           application: 'library-management-system'
           environment: 'local'
+
+  - job_name: 'notification-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['notification-service:8082']
+        labels:
+          application: 'notification-service'
+          environment: 'local'
+
+  - job_name: 'reservation-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['reservation-service:8083']
+        labels:
+          application: 'reservation-service'
+          environment: 'local'
+
+  - job_name: 'payment-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['payment-service:8084']
+        labels:
+          application: 'payment-service'
+          environment: 'local'
+

@@ -21,12 +21,12 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
 
     @Query("SELECT m FROM Member m WHERE " +
            "(:status IS NULL OR m.status = :status) AND " +
-           "(:search IS NULL OR " +
-           " LOWER(m.membershipNumber) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " LOWER(m.firstName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " LOWER(m.lastName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " LOWER(m.email) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " LOWER(m.phone) LIKE LOWER(CONCAT('%', :search, '%')))")
+           "(CAST(:search AS string) IS NULL OR " +
+           " LOWER(m.membershipNumber) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR " +
+           " LOWER(m.firstName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR " +
+           " LOWER(m.lastName) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR " +
+           " LOWER(m.email) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR " +
+           " LOWER(m.phone) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))")
     Page<Member> searchMembers(
             @Param("search") String search,
             @Param("status") MemberStatus status,

@@ -31,12 +31,12 @@ public interface BookRepository extends JpaRepository<Book, UUID> {
            "AND (:availableOnly IS NULL OR (:availableOnly = TRUE AND b.availableCopies > 0) OR (:availableOnly = FALSE AND b.availableCopies = 0)) " +
            "AND (:categoryId IS NULL OR c.id = :categoryId) " +
            "AND (:authorId IS NULL OR a.id = :authorId) " +
-           "AND (:search IS NULL OR " +
-           "     LOWER(b.title) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           "     LOWER(b.isbn) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           "     LOWER(b.publisher) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           "     LOWER(a.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           "     LOWER(c.name) LIKE LOWER(CONCAT('%', :search, '%')))")
+           "AND (CAST(:search AS string) IS NULL OR " +
+           "     LOWER(b.title) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR " +
+           "     LOWER(b.isbn) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR " +
+           "     LOWER(b.publisher) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR " +
+           "     LOWER(a.name) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) OR " +
+           "     LOWER(c.name) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')))")
     Page<Book> searchBooks(
             @Param("search") String search,
             @Param("categoryId") UUID categoryId,

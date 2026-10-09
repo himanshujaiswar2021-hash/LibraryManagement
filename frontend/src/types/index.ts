@@ -147,3 +147,108 @@ export interface PagedResponse<T> {
   first: boolean;
   last: boolean;
 }
+
+// Microservice 1: Notification Types
+export type NotificationType =
+  | 'LOAN_ISSUED'
+  | 'LOAN_RETURNED'
+  | 'LOAN_DUE_SOON'
+  | 'OVERDUE_ALERT'
+  | 'RESERVATION_READY'
+  | 'RESERVATION_CANCELLED'
+  | 'PAYMENT_CONFIRMATION'
+  | 'FINE_INVOICE'
+  | 'GENERAL_ANNOUNCEMENT';
+
+export type DeliveryChannel = 'IN_APP' | 'EMAIL' | 'SMS' | 'PUSH';
+export type NotificationStatus = 'PENDING' | 'SENT' | 'DELIVERED' | 'FAILED';
+
+export interface NotificationItem {
+  id: string;
+  recipientId: string;
+  recipientEmail: string;
+  recipientPhone?: string;
+  type: NotificationType;
+  channel: DeliveryChannel;
+  title: string;
+  message: string;
+  status: NotificationStatus;
+  isRead: boolean;
+  readAt?: string;
+  createdAt: string;
+}
+
+// Microservice 2: Reservation Types
+export type ReservationStatus = 'PENDING' | 'READY_FOR_PICKUP' | 'FULFILLED' | 'CANCELLED' | 'EXPIRED';
+
+export interface Reservation {
+  id: string;
+  bookId: string;
+  bookTitle: string;
+  bookIsbn: string;
+  memberId: string;
+  memberName: string;
+  memberEmail: string;
+  status: ReservationStatus;
+  queuePosition: number;
+  readyAt?: string;
+  pickupDeadline?: string;
+  fulfilledAt?: string;
+  cancelledAt?: string;
+  createdAt: string;
+}
+
+export interface ReservationStats {
+  totalReservations: number;
+  pendingReservations: number;
+  readyForPickup: number;
+  fulfilledReservations: number;
+  cancelledReservations: number;
+}
+
+// Microservice 3: Payment & Fine Types
+export type FineStatus = 'UNPAID' | 'PAID' | 'WAIVED';
+export type PaymentMethod = 'CREDIT_CARD' | 'DEBIT_CARD' | 'UPI' | 'CASH' | 'WAIVER';
+export type TransactionStatus = 'SUCCESS' | 'FAILED' | 'PENDING';
+
+export interface Fine {
+  id: string;
+  loanId: string;
+  loanNumber: string;
+  memberId: string;
+  memberName: string;
+  bookId: string;
+  bookTitle: string;
+  overdueDays: number;
+  amount: number;
+  paidAmount: number;
+  remainingAmount: number;
+  status: FineStatus;
+  notes?: string;
+  paidAt?: string;
+  waivedAt?: string;
+  waivedBy?: string;
+  createdAt: string;
+}
+
+export interface PaymentTransaction {
+  id: string;
+  transactionReference: string;
+  fineId: string;
+  memberId: string;
+  amount: number;
+  method: PaymentMethod;
+  status: TransactionStatus;
+  receiptNumber: string;
+  processedBy: string;
+  createdAt: string;
+}
+
+export interface PaymentStats {
+  totalRevenueCollected: number;
+  totalOutstandingFines: number;
+  unpaidFinesCount: number;
+  paidFinesCount: number;
+  waivedFinesCount: number;
+}
+

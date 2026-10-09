@@ -106,4 +106,13 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.login(request, httpServletResponse, "127.0.0.1"))
                 .isInstanceOf(BadCredentialsException.class);
     }
+
+    @Test
+    void testBCryptHash() {
+        org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder encoder = 
+            new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder(12);
+        String hash = encoder.encode("admin123");
+        System.out.println("GENERATED_BCRYPT_HASH=" + hash);
+        assertThat(encoder.matches("admin123", hash)).isTrue();
+    }
 }

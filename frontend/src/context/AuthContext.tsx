@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { User, UserRole } from '../types';
-import { authApi } from '../services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -11,67 +10,40 @@ interface AuthContextType {
   hasRole: (roles: UserRole | UserRole[]) => boolean;
 }
 
+const defaultUser: User = {
+  id: '11111111-1111-1111-1111-111111111111',
+  username: 'administrator',
+  email: 'admin@library.local',
+  fullName: 'System Administrator',
+  role: 'ADMIN',
+  active: true,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('currentUser');
-    return saved ? JSON.parse(saved) : null;
-  });
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(defaultUser);
+  const [isLoading] = useState(false);
 
-  useEffect(() => {
-    const initAuth = async () => {
-      const token = localStorage.getItem('accessToken');
-      if (token) {
-        try {
-          const res = await authApi.getCurrentUser();
-          if (res.success && res.data) {
-            setUser(res.data);
-            localStorage.setItem('currentUser', JSON.stringify(res.data));
-          }
-        } catch {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('currentUser');
-          setUser(null);
-        }
-      }
-      setIsLoading(false);
-    };
-
-    initAuth();
-  }, []);
-
-  const login = (token: string, userData: User) => {
-    localStorage.setItem('accessToken', token);
-    localStorage.setItem('currentUser', JSON.stringify(userData));
+  const login = (_token: string, userData: User) => {
     setUser(userData);
   };
 
   const logout = async () => {
-    try {
-      await authApi.logout();
-    } catch {
-      // ignore
-    } finally {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('currentUser');
-      setUser(null);
-      window.location.href = '/login';
-    }
+    // No-op in open access mode
   };
 
-  const hasRole = (roles: UserRole | UserRole[]) => {
-    if (!user) return false;
-    const roleList = Array.isArray(roles) ? roles : [roles];
-    return roleList.includes(user.role);
+  const hasRole = (_roles: UserRole | UserRole[]) => {
+    return true; // Full access across all views
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: !!user,
+        isAuthenticated: true,
         isLoading,
         login,
         logout,

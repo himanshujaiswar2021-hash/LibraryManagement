@@ -40,6 +40,18 @@ export const Sidebar: React.FC = () => {
       show: true,
     },
     {
+      label: 'Reservations',
+      path: '/reservations',
+      icon: <ClockAlert className="w-5 h-5 text-indigo-500" />,
+      show: true,
+    },
+    {
+      label: 'Fines & Payments',
+      path: '/payments',
+      icon: <ShieldCheck className="w-5 h-5 text-emerald-500" />,
+      show: hasRole(['ADMIN', 'LIBRARIAN']),
+    },
+    {
       label: 'Overdue Loans',
       path: '/loans/overdue',
       icon: <ClockAlert className="w-5 h-5 text-amber-500" />,

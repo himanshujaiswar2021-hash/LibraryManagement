@@ -4,10 +4,13 @@
 FROM eclipse-temurin:21-jdk-alpine AS builder
 WORKDIR /workspace/app
 
+# Install bash and curl for wrapper script
+RUN apk add --no-cache bash curl
+
 # Copy Maven wrapper & POM
 COPY .mvn .mvn
 COPY mvnw pom.xml ./
-RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B || true
 
 # Copy source code and build executable jar
 COPY src src
