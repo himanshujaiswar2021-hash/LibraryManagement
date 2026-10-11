@@ -13,7 +13,7 @@ pipeline {
                         if (isUnix()) {
                             sh 'sh ./mvnw -B -ntp clean verify'
                         } else {
-                            bat 'mvnw.cmd -B -ntp clean verify'
+                            bat 'call mvnw.cmd -B -ntp clean verify'
                         }
                     }
                 }
@@ -28,7 +28,7 @@ pipeline {
                             if (isUnix()) {
                                 sh 'sh ./mvnw -B -ntp clean verify'
                             } else {
-                                bat 'mvnw.cmd -B -ntp clean verify'
+                                bat 'call mvnw.cmd -B -ntp clean verify'
                             }
                         }
                     }
@@ -36,15 +36,17 @@ pipeline {
             }
         }
 
-        stage('Build frontend') {
+        stage('Check and build frontend') {
             steps {
                 dir('frontend') {
                     script {
                         if (isUnix()) {
                             sh 'npm ci'
+                            sh 'npm run lint'
                             sh 'npm run build'
                         } else {
                             bat 'npm ci'
+                            bat 'npm run lint'
                             bat 'npm run build'
                         }
                     }
