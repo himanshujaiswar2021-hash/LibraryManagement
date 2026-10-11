@@ -11,7 +11,7 @@ pipeline {
                 dir('backend') {
                     script {
                         if (isUnix()) {
-                            sh './mvnw -B -ntp clean verify'
+                            sh 'sh ./mvnw -B -ntp clean verify'
                         } else {
                             bat 'mvnw.cmd -B -ntp clean verify'
                         }
@@ -26,7 +26,7 @@ pipeline {
                     ['services/notification-service', 'services/payment-service', 'services/reservation-service'].each { service ->
                         dir(service) {
                             if (isUnix()) {
-                                sh './mvnw -B -ntp clean verify'
+                                sh 'sh ./mvnw -B -ntp clean verify'
                             } else {
                                 bat 'mvnw.cmd -B -ntp clean verify'
                             }
